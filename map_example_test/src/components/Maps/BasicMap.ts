@@ -5,6 +5,7 @@ import mapData from "@/assets/mapData/CHN.json";
 export enum InitLayer {
   TDT = '天地图',
   OffLine = '本地资源',
+  NONE = '无图层',
 }
 
 export class BasicMap {
@@ -18,7 +19,7 @@ export class BasicMap {
       homeButton: true,       //home键
       geocoder: false,         //地址编码
       baseLayerPicker: false, //图层选择控件
-      timeline: false,        //时间轴
+      timeline: true,        //时间轴
       fullscreenButton: false, //全屏显示
       infoBox: false,         //点击要素之后浮窗
       sceneModePicker: true,  //投影方式  三维/二维
@@ -60,6 +61,9 @@ export class BasicMap {
       }
       case InitLayer.OffLine: {
         this.initOffLineMaps();
+        break;
+      }
+      case InitLayer.NONE: {
         break;
       }
       case undefined: {
