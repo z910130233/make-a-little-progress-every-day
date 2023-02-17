@@ -11,6 +11,7 @@ import {OSM, Stamen} from "ol/source";
 import {View} from "ol";
 import {fromLonLat} from "ol/proj";
 import Map from "ol/Map";
+import OLExample_1 from "./example/OLExample_1";
 
 const OpenLayersTest: React.FC = () => {
 
@@ -86,7 +87,8 @@ const OpenLayersTest: React.FC = () => {
     // const canvas = document.createElement('canvas')
     // console.log(canvas)
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    initClipTest()
+
+    // initClipTest()
   }, [])
 
   const initClipTest: any = () => {
@@ -142,7 +144,8 @@ const OpenLayersTest: React.FC = () => {
   }
 
   return <>
-    <div id={'myMap'} style={{width: 500, height: 500, background: 'transparent'}}/>
+    {/*<div id={'myMap'} style={{width: 500, height: 500, background: 'transparent'}}/>*/}
+    <OLExample_1 />
   </>
 }
 
