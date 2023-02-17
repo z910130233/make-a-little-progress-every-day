@@ -5,6 +5,9 @@ import Map from "ol/Map";
 import {View} from "ol";
 import {defaults} from "ol/control";
 import styles from './index.less';
+import VectorLayer from "ol/layer/Vector";
+import { Style, Fill, Stroke } from "ol/style";
+import VectorSource from "ol/source/Vector";
 
 export enum InitOLLayer {
   None
@@ -38,8 +41,7 @@ export class OlMap {
         url: 'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
         crossOrigin: "anonymous",
-      }),
-      zIndex: 1,
+      })
     });
 
     this.tdtImgLayer = new TileLayer({
@@ -48,8 +50,7 @@ export class OlMap {
         url: 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
         crossOrigin: "anonymous",
-      }),
-      zIndex: 2,
+      })
     });
 
     this.tdtCvaLayer = new TileLayer({
@@ -57,8 +58,7 @@ export class OlMap {
         url: 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
         crossOrigin: "anonymous",
-      }),
-      zIndex: 10,
+      })
     });
 
     switch (initLayer) {
@@ -73,5 +73,37 @@ export class OlMap {
     // this.map.addLayer(this.tdtVecLayer);
     this.map.addLayer(this.tdtImgLayer);
     this.map.addLayer(this.tdtCvaLayer);
+  }
+
+  addHighlightLayer(layer: any): any {
+    // eslint-disable-next-line no-param-reassign
+    layer = new VectorLayer({
+      source: new VectorSource(),
+      style: () => {
+        return new Style({
+          fill: new Fill({
+            color: 'raba(0,0,0,1)'
+          }),
+          stroke: new Stroke({
+            color: 'rgba(255, 255, 255, 1)',
+            width: 1
+          })
+        });
+      }
+    });
+    this.map.addLayer(layer);
+    this.onBindLayerClick(layer);
+    return layer;
+  }
+
+  onBindLayerClick(layer: any): void {
+    layer.on('prerender', (evt: any) => {
+      evt.context.shadowBlur = 25;
+      evt.context.shadowColor = 'black';
+    });
+    layer.on('postrender', (evt: any) => {
+      evt.context.shadowBlur = 0;
+      evt.context.shadowColor = 'black';
+    });
   }
 }

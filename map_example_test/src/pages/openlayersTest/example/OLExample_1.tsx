@@ -9,7 +9,7 @@ import {GeoJSON} from "ol/format";
 import {Fill, Style} from "ol/style";
 import {getVectorContext} from "ol/render";
 import Map from "ol/Map";
-import style from './OlExample_1.less';
+import style from './example.less';
 import {Polygon} from "ol/geom";
 import {Feature} from "ol";
 
