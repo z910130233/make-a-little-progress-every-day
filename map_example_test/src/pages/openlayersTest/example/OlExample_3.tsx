@@ -7,8 +7,7 @@ import VectorLayer from "ol/layer/Vector";
 import {getVectorContext} from "ol/render";
 import style from "./example.less";
 import TileLayer from "ol/layer/Tile";
-import {OSM, Stamen, XYZ} from "ol/source";
-import {OlMapConfig} from "@/components/Maps/config/OlMapConfig";
+import {Stamen} from "ol/source";
 import {MultiPolygon, Polygon} from "ol/geom";
 import {Feature} from "ol";
 
@@ -32,7 +31,7 @@ const OlExample_3: React.FC = () => {
       }),
     })
     const vectorSource: VectorSource = new VectorSource({
-      url: './mapData/newCHNSingle.geojson',
+      url: './mapData/t1.geojson',
       format: new GeoJSON(),
     })
     const vectorLayer: any = new VectorLayer({
@@ -50,21 +49,24 @@ const OlExample_3: React.FC = () => {
       const source = evt.target;
       if (source.getState() === 'ready') {
         const features = source.getFeatures();
+        console.log(new GeoJSON().writeFeatures(features))
         features.forEach((feature: any) => {
           if (feature.getGeometry().getType() === 'Polygon') {
             const polygon: Polygon = feature.getGeometry();
             const newPolygon: Polygon = new Polygon([]);
+            console.log(polygon.getCoordinates())
             if (polygon.getCoordinates().length > 0) {
-              const coordinates = olMap.polygonChange(polygon.getCoordinates());
-              newPolygon.setCoordinates([coordinates]);
+              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates());
+              console.log(coordinates)
+              newPolygon.setCoordinates([coordinates[0]]);
               newFeatures.push(new Feature({
                 geometry: newPolygon,
               }))
             }
           } else if(feature.getGeometry().getType() === 'MultiPolygon') {
             const newPolygon: MultiPolygon = new MultiPolygon([]);
-            const coordinates = olMap.multiPolygonChange(feature.getGeometry().getCoordinates());
-            newPolygon.setCoordinates([coordinates]);
+            const coordinates: any = olMap.multiPolygonOffset(feature.getGeometry().getCoordinates());
+            newPolygon.setCoordinates([coordinates[0]]);
             newFeatures.push(new Feature({
               geometry: newPolygon,
             }))
@@ -75,6 +77,7 @@ const OlExample_3: React.FC = () => {
 
     setTimeout(() => {
       console.log(newFeatures)
+      console.log(new GeoJSON().writeFeatures(newFeatures))
       vectorSource2.addFeatures(newFeatures)
     }, 200)
 
@@ -94,6 +97,9 @@ const OlExample_3: React.FC = () => {
       })
       event.context.globalCompositeOperation = 'source-over';
     })
+
+    map.getView().setCenter([8.23, 46.86]);
+    map.getView().setZoom(7);
 
   }, [])
 

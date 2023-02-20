@@ -6,7 +6,7 @@ import {View} from "ol";
 import {defaults} from "ol/control";
 import styles from './index.less';
 import VectorLayer from "ol/layer/Vector";
-import { Style, Fill, Stroke } from "ol/style";
+import {Style, Fill, Stroke} from "ol/style";
 import VectorSource from "ol/source/Vector";
 
 export enum InitOLLayer {
@@ -128,26 +128,38 @@ export class OlMap {
     });
   }
 
-  polygonChange(coordinates: any) {
+  /**
+   * 偏移位置
+   * @param coordinates
+   * @param leftOffset
+   * @param rightOffSet
+   */
+  polygonOffset(coordinates: any, leftOffset: number = 0.111111, rightOffSet: number = 1.111111): number [] {
     const list: any = [];
-    coordinates.forEach((e, i) => {
-      e.forEach((item, m) => {
+    const offsetList: any = [];
+    coordinates.forEach((e: number[]) => {
+      e.forEach((item: any) => {
         const a: number[] = [];
+        const b: number[] = [];
         for (let j = 0; j < item.length; j++) {
-          item[j] = j == 0 ? item[j] + 0.111111 : item[j] - 1.111111;
+          item[j] = j == 0 ? item[j] + leftOffset : item[j] - rightOffSet;
           a.push(item[j]);
+          b.push(j == 0 ? item[j] - leftOffset : item[j] + rightOffSet);
         }
         list.push(a);
+        // offsetList.push(a);
       })
     })
-    return list
+    return [list, offsetList]
   }
 
-  multiPolygonChange(coordinates: any) {
+  multiPolygonOffset(coordinates: any): number [] {
     const list: any = [];
+    const offsetList: any = [];
     coordinates.forEach((item: number[]) => {
-      list.push(this.polygonChange(item));
+      list.push(this.polygonOffset(item)[0]);
+      offsetList.push(this.polygonOffset(item)[1]);
     })
-    return list
+    return [list, offsetList]
   }
 }
