@@ -18,13 +18,14 @@ export class OlMap {
   tdtVecLayer: TileLayer<XYZ>;
   tdtImgLayer: TileLayer<XYZ>;
   tdtCvaLayer: TileLayer<XYZ>;
+  googleImgLayer: TileLayer<XYZ>;
 
   constructor(el: string, initLayer?: InitOLLayer) {
 
     this.map = new Map({
       view: new View({
         center: [113.8, 34.6],
-        zoom: 5,
+        zoom: 3,
         projection: 'EPSG:4326',
       }),
       layers: [],
@@ -37,6 +38,7 @@ export class OlMap {
     });
 
     this.tdtVecLayer = new TileLayer({
+      className: 'stamen',
       source: new XYZ({
         url: 'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
@@ -45,6 +47,7 @@ export class OlMap {
     });
 
     this.tdtImgLayer = new TileLayer({
+      // className: 'stamen',
       // visible: false,
       source: new XYZ({
         url: 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
@@ -54,12 +57,22 @@ export class OlMap {
     });
 
     this.tdtCvaLayer = new TileLayer({
+      className: 'stamen',
       source: new XYZ({
         url: 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
         crossOrigin: "anonymous",
       })
     });
+
+    this.googleImgLayer = new TileLayer({
+      className: 'stamen',
+      source: new XYZ({
+        url: 'https://gac-geo.googlecnapps.cn/maps/vt?lyrs=s,m&gl=&x={x}&y={y}&z={z}',
+        wrapX: false,
+        crossOrigin: "anonymous",
+      })
+    })
 
     switch (initLayer) {
       case InitOLLayer.None:
@@ -75,6 +88,10 @@ export class OlMap {
     this.map.addLayer(this.tdtCvaLayer);
   }
 
+  /**
+   * 添加阴影图层
+   * @param layer
+   */
   addHighlightLayer(layer: any): any {
     // eslint-disable-next-line no-param-reassign
     layer = new VectorLayer({
@@ -96,6 +113,10 @@ export class OlMap {
     return layer;
   }
 
+  /**
+   * 图层监听修改
+   * @param layer
+   */
   onBindLayerClick(layer: any): void {
     layer.on('prerender', (evt: any) => {
       evt.context.shadowBlur = 25;
@@ -105,5 +126,28 @@ export class OlMap {
       evt.context.shadowBlur = 0;
       evt.context.shadowColor = 'black';
     });
+  }
+
+  polygonChange(coordinates: any) {
+    const list: any = [];
+    coordinates.forEach((e, i) => {
+      e.forEach((item, m) => {
+        const a: number[] = [];
+        for (let j = 0; j < item.length; j++) {
+          item[j] = j == 0 ? item[j] + 0.111111 : item[j] - 1.111111;
+          a.push(item[j]);
+        }
+        list.push(a);
+      })
+    })
+    return list
+  }
+
+  multiPolygonChange(coordinates: any) {
+    const list: any = [];
+    coordinates.forEach((item: number[]) => {
+      list.push(this.polygonChange(item));
+    })
+    return list
   }
 }

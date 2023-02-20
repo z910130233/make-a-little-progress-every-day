@@ -15,7 +15,7 @@ const OlExample_2: React.FC = () => {
     map.addLayer(olMap.tdtVecLayer);
 
     const vectorSource = new VectorSource({
-      url: './mapData/CHNSingle.geojson',
+      url: './mapData/newCHNSingle.geojson',
       format: new GeoJSON(),
     })
     const vectorLayer = new VectorLayer({

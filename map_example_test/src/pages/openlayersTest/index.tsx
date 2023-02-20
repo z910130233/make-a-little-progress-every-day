@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import OLExample_1 from "./example/OLExample_1";
 import OlExample_2 from "./example/OlExample_2";
+import OlExample_3 from "./example/OlExample_3";
 
 const OpenLayersTest: React.FC = () => {
 
@@ -9,7 +10,7 @@ const OpenLayersTest: React.FC = () => {
 
   return <>
     {/*<OLExample_1/>*/}
-    <OlExample_2/>
+    <OlExample_3/>
   </>
 }
 
