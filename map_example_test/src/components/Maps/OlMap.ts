@@ -138,16 +138,24 @@ export class OlMap {
     const list: any = [];
     const offsetList: any = [];
     coordinates.forEach((e: number[]) => {
-      e.forEach((item: any) => {
-        const a: number[] = [];
-        const b: number[] = [];
-        for (let j = 0; j < item.length; j++) {
-          item[j] = j == 0 ? item[j] + leftOffset : item[j] - rightOffSet;
-          a.push(item[j]);
-          b.push(j == 0 ? item[j] - leftOffset : item[j] + rightOffSet);
-        }
+      const o: any = [];
+      // const firstItem: any = [];
+      e.forEach((item: any, index: number) => {
+        // if (index === 0) firstItem.push(item);
+        const a: any = [item[0] + leftOffset, item[1] - rightOffSet];
         list.push(a);
-        // offsetList.push(a);
+
+        const of: any = [];
+        const nextOffPoint: any = index === e.length - 1 ? e[0] : e[index + 1];
+        for (let i = 0; i < 6; i++) {
+          if (i === 0) of.push(a);
+          if (i === 1) of.push([nextOffPoint[0] + leftOffset, nextOffPoint[1] - rightOffSet]);
+          if (i === 2) of.push(nextOffPoint);
+          if (i === 3) of.push(item);
+          if (i === 4) of.push(a);
+        }
+        o.push(of);
+        offsetList.push(o);
       })
     })
     return [list, offsetList]

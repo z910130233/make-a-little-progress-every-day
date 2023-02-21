@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {InitOLLayer, OlMap} from "@/components/Maps/OlMap";
-import {Fill, Style} from "ol/style";
+import {Fill, Stroke, Style} from "ol/style";
 import VectorSource from "ol/source/Vector";
 import {GeoJSON} from "ol/format";
 import VectorLayer from "ol/layer/Vector";
@@ -30,6 +30,14 @@ const OlExample_3: React.FC = () => {
         color: 'rgb(149,149,149)'
       }),
     })
+    const style2: Style = new Style({
+      fill: new Fill({
+        color: 'rgb(149,149,149, 0.6)'
+      }),
+      stroke: new Stroke({
+        color: 'rgb(250,214,214)'
+      })
+    })
     const vectorSource: VectorSource = new VectorSource({
       url: './mapData/t1.geojson',
       format: new GeoJSON(),
@@ -41,7 +49,7 @@ const OlExample_3: React.FC = () => {
 
     const vectorSource2 = new VectorSource();
     const vectorLayer2: VectorLayer<any> = new VectorLayer({
-      style: style,
+      style: style2,
       source: vectorSource2
     })
     const newFeatures: any[] = [];
@@ -54,19 +62,23 @@ const OlExample_3: React.FC = () => {
           if (feature.getGeometry().getType() === 'Polygon') {
             const polygon: Polygon = feature.getGeometry();
             const newPolygon: Polygon = new Polygon([]);
+            const newMultiPolygon: MultiPolygon = new MultiPolygon([]);
             console.log(polygon.getCoordinates())
             if (polygon.getCoordinates().length > 0) {
-              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates());
+              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates(), 0.1, 0.3);
               console.log(coordinates)
               newPolygon.setCoordinates([coordinates[0]]);
+              newMultiPolygon.setCoordinates(coordinates[1]);
               newFeatures.push(new Feature({
-                geometry: newPolygon,
+                geometry: newMultiPolygon,
               }))
             }
           } else if(feature.getGeometry().getType() === 'MultiPolygon') {
             const newPolygon: MultiPolygon = new MultiPolygon([]);
             const coordinates: any = olMap.multiPolygonOffset(feature.getGeometry().getCoordinates());
-            newPolygon.setCoordinates([coordinates[0]]);
+            console.log(coordinates[1])
+            // newPolygon.setCoordinates([coordinates[0]]);
+            newPolygon.setCoordinates(coordinates[1][1]);
             newFeatures.push(new Feature({
               geometry: newPolygon,
             }))
@@ -84,7 +96,6 @@ const OlExample_3: React.FC = () => {
     map.addLayer(vectorLayer2);
     map.addLayer(olMap.googleImgLayer);
     map.addLayer(vectorLayer);
-
 
     vectorLayer.getSource().on("addfeature", () => {
       olMap.googleImgLayer.setExtent(vectorLayer.getSource().getExtent())
