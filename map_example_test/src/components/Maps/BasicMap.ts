@@ -12,7 +12,7 @@ export class BasicMap {
   viewer: any;
 
   constructor(el: string, layers?: InitLayer) {
-    // Cesium.Ion.defaultAccessToken = Constants.IcoAccessToken;
+    Cesium.Ion.defaultAccessToken = Constants.IcoAccessToken;
     this.viewer = new Cesium.Viewer(el, {
       shouldAnimate: false,
       animation: false,       //动画

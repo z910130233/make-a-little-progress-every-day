@@ -110,9 +110,6 @@ const BasicMapTest: React.FC = (props: any) => {
 
 
   return <>
-    {/*<div id='cesiumContainer1' className={style.mapBox}/>*/}
-    {/*/!*<div id='cesiumContainer2' className={style.mapBox}/>*!/*/}
-    {/*<div id='openlayersMap' className={style.mapBox}/>*/}
     <Example_1/>
   </>
 }

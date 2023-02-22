@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react';
 import {BasicMap, InitLayer} from "@/components/Maps/BasicMap";
 import * as Cesium from "cesium";
+import style from "./example.less";
+import {DefaultProxy, Resource} from "cesium";
 
 const Example_1: React.FC = () => {
 
@@ -75,7 +77,15 @@ const Example_1: React.FC = () => {
     }
 
 // STEP 4 CODE (green circle entity)
-// Create an entity to both visualize the entire radar sample series with a line and add a point that moves along the samples.
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // loadPointTracked(viewer, start, stop, positionProperty);
+
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    loadModel(viewer, start, stop, positionProperty);
+  }, [])
+
+  const loadPointTracked = async (viewer: any, start: any, stop: any, positionProperty: any): Promise<void> => {
+    // Create an entity to both visualize the entire radar sample series with a line and add a point that moves along the samples.
     const airplaneEntity = viewer.entities.add({
       availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({start: start, stop: stop})]),
       position: positionProperty,
@@ -84,11 +94,31 @@ const Example_1: React.FC = () => {
     });
 // Make the camera track this moving entity.
     viewer.trackedEntity = airplaneEntity;
-  }, [])
+  }
+
+  // STEP 6 CODE (airplane entity)
+  const loadModel = async (viewer: any, start: any, stop: any, positionProperty: any): Promise<void> => {
+    // Load the glTF model from Cesium ion.
+    const resource = new Resource({
+      url: './cesiumModel/Cesium_Air.glb'
+    });
+    const airplaneUri = await resource;
+    console.log(airplaneUri)
+    const airplaneEntity = viewer.entities.add({
+      availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({start: start, stop: stop})]),
+      position: positionProperty,
+      // Attach the 3D model instead of the green point.
+      model: {uri: airplaneUri, scale: 500},
+      // point: {pixelSize: 30, color: Cesium.Color.GREEN},
+      // Automatically compute the orientation from the position.
+      orientation: new Cesium.VelocityOrientationProperty(positionProperty),
+      path: new Cesium.PathGraphics({width: 3})
+    });
+    viewer.trackedEntity = airplaneEntity;
+  }
 
   return <>
-    <div>例子1：</div>
-    <div id={'example_1'}/>
+    <div id={'example_1'} className={style.mapBox}/>
   </>
 }
 
