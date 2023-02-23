@@ -1,4 +1,38 @@
 
-.mapBox{
-  width: 60%;
+.mapBox {
+  width: 700px;
+  height: 500px;
+}
+
+
+.toolBox {
+  position: absolute;
+  top: 10px;
+  left: 710px;
+  width: 500px;
+
+  > div {
+    width: 100%;
+  }
+
+  .offsetBox {
+    width: 500px;
+    height: 500px;
+    text-align: center;
+
+    .noVerticals {
+      display: flex;
+      justify-content: space-between;
+
+      > div {
+        width: 100%;
+      }
+    }
+
+    .verticals {
+      display: inline-block;
+      height: 300px;
+      //marginLeft: 70;
+    }
+  }
 }

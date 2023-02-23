@@ -52,7 +52,7 @@ export class BasicMap {
     // this.viewer.scene.postProcessStages.fxaa.enabled = true;
 
     this.viewer.cesiumWidget.creditContainer.style.display = "none";      //去除版权信息
-    this.viewer.scene.globe.enableLighting = true;        //添加光照阴影
+    this.viewer.scene.globe.enableLighting = false;        //添加光照阴影
 
     switch (layers) {
       case InitLayer.TDT: {
