@@ -35,11 +35,11 @@ const OlExample_3: React.FC = () => {
         color: 'rgb(149,149,149, 0.6)'
       }),
       stroke: new Stroke({
-        color: 'rgb(250,214,214)'
+        color: 'rgb(250,214,214, 0.1)'
       })
     })
     const vectorSource: VectorSource = new VectorSource({
-      url: './mapData/t1.geojson',
+      url: './mapData/newCHNSingle.geojson',
       format: new GeoJSON(),
     })
     const vectorLayer: any = new VectorLayer({
@@ -65,7 +65,7 @@ const OlExample_3: React.FC = () => {
             const newMultiPolygon: MultiPolygon = new MultiPolygon([]);
             console.log(polygon.getCoordinates())
             if (polygon.getCoordinates().length > 0) {
-              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates(), 0.1, 0.3);
+              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates(), -0, 1.5);
               console.log(coordinates)
               newPolygon.setCoordinates([coordinates[0]]);
               newMultiPolygon.setCoordinates(coordinates[1]);
