@@ -39,7 +39,7 @@ const OlExample_3: React.FC = () => {
       })
     })
     const vectorSource: VectorSource = new VectorSource({
-      url: './mapData/newCHNSingle.geojson',
+      url: './mapData/t1.geojson',
       format: new GeoJSON(),
     })
     const vectorLayer: any = new VectorLayer({
@@ -65,12 +65,12 @@ const OlExample_3: React.FC = () => {
             const newMultiPolygon: MultiPolygon = new MultiPolygon([]);
             console.log(polygon.getCoordinates())
             if (polygon.getCoordinates().length > 0) {
-              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates(), -0, 1.5);
+              const coordinates: any = olMap.polygonOffset(polygon.getCoordinates(), -0, 0.2);
               console.log(coordinates)
               newPolygon.setCoordinates([coordinates[0]]);
-              newMultiPolygon.setCoordinates(coordinates[1]);
+              // newMultiPolygon.setCoordinates(coordinates[1]);
               newFeatures.push(new Feature({
-                geometry: newMultiPolygon,
+                geometry: newPolygon,
               }))
             }
           } else if(feature.getGeometry().getType() === 'MultiPolygon') {

@@ -68,9 +68,37 @@ export class OlMap {
     this.googleImgLayer = new TileLayer({
       className: 'stamen',
       source: new XYZ({
-        url: 'https://gac-geo.googlecnapps.cn/maps/vt?lyrs=s,m&gl=&x={x}&y={y}&z={z}',
+        // url: 'https://gac-geo.googlecnapps.cn/maps/vt?lyrs=s,m&gl=&x={x}&y={y}&z={z}',
+        url: 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
         crossOrigin: "anonymous",
+        // tileUrlFunction: function (tileCoord) {
+        //   var z = tileCoord[0]
+        //   var x = tileCoord[1]
+        //   var y = tileCoord[2]
+        //   y = -y - 1
+        //   return mapObj?.mapUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y)
+        // },
+        tileLoadFunction: function (imageTile: any, src: string) {
+          // 使用滤镜 将白色修改为深色
+          let img = new Image()
+          // img.crossOrigin = ''
+          // 设置图片不从缓存取，从缓存取可能会出现跨域，导致加载失败
+          img.setAttribute('crossOrigin', 'anonymous')
+          img.onload = function () {
+            let canvas = document.createElement('canvas')
+            let w = img.width
+            let h = img.height
+            canvas.width = w
+            canvas.height = h
+            let context: any = canvas.getContext('2d')
+            context.filter = 'grayscale(98%) invert(100%) sepia(20%) hue-rotate(180deg) saturate(1600%) brightness(80%) contrast(90%)'
+            // context.filter = 'sepia(100%)'
+            context.drawImage(img, 0, 0, w, h, 0, 0, w, h)
+            imageTile.getImage().src = canvas.toDataURL('image/png')
+          }
+          img.src = src
+        },
       })
     })
 
@@ -99,7 +127,7 @@ export class OlMap {
       style: () => {
         return new Style({
           fill: new Fill({
-            color: 'raba(0,0,0,1)'
+            color: 'rgba(0,0,0,1)'
           }),
           stroke: new Stroke({
             color: 'rgba(255, 255, 255, 1)',
@@ -120,12 +148,12 @@ export class OlMap {
   onBindLayerClick(layer: any): void {
     layer.on('prerender', (evt: any) => {
       evt.context.shadowBlur = 25;
-      evt.context.shadowColor = 'black';
+      evt.context.shadowColor = 'rgb(107,185,226)';
     });
-    layer.on('postrender', (evt: any) => {
-      evt.context.shadowBlur = 0;
-      evt.context.shadowColor = 'black';
-    });
+    // layer.on('postrender', (evt: any) => {
+    //   evt.context.shadowBlur = 0;
+    //   evt.context.shadowColor = 'rgb(205,95,134)';
+    // });
   }
 
   /**
@@ -133,15 +161,14 @@ export class OlMap {
    * @param coordinates
    * @param leftOffset
    * @param rightOffSet
+   * return list: 返回偏移后的数据，offsetList: 重新组装的一点小玩意儿，目前面的边比较少能用（多的时候暂时加载不进去，组装后的单个要素数据量太大了，分成多个要素添加不知道可不可以）
    */
   polygonOffset(coordinates: any, leftOffset: number = 0.111111, rightOffSet: number = 1.111111): number [] {
     const list: any = [];
     const offsetList: any = [];
     coordinates.forEach((e: number[]) => {
       const o: any = [];
-      // const firstItem: any = [];
       e.forEach((item: any, index: number) => {
-        // if (index === 0) firstItem.push(item);
         const a: any = [item[0] + leftOffset, item[1] - rightOffSet];
         list.push(a);
 
@@ -161,12 +188,19 @@ export class OlMap {
     return [list, offsetList]
   }
 
-  multiPolygonOffset(coordinates: any): number [] {
+  /**
+   * multiPolygon情况下设置偏移
+   * @param coordinates
+   * @param leftOffset
+   * @param rightOffSet
+   * return 同上polygonOffset
+   */
+  multiPolygonOffset(coordinates: any, leftOffset: number = 0.111111, rightOffSet: number = 1.111111): number [] {
     const list: any = [];
     const offsetList: any = [];
     coordinates.forEach((item: number[]) => {
-      list.push(this.polygonOffset(item)[0]);
-      offsetList.push(this.polygonOffset(item)[1]);
+      list.push(this.polygonOffset(item)[0], leftOffset, rightOffSet);
+      offsetList.push(this.polygonOffset(item)[1], leftOffset, rightOffSet);
     })
     return [list, offsetList]
   }

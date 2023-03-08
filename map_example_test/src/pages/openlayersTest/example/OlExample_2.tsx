@@ -33,14 +33,13 @@ const OlExample_2: React.FC = () => {
 
     //添加阴影的图层
     const highlightLayer: any = olMap.addHighlightLayer(vectorLayer);
-
     vectorSource.once('change', (evt: any) => {
       const source = evt.target;
       if (source.getState() === 'ready') {
         source.forEachFeature((f: any) => {
           highlightLayer.setStyle(() => {
               return new Style({
-                fill: new Fill({color: (f.style && f.style.getFill) ? f.style.getFill().getColor() : '#aaa'}),
+                fill: new Fill({color: (f.style && f.style.getFill) ? f.style.getFill().getColor() : 'rgba(255,255,255,0)'}),
                 stroke: new Stroke({color: 'rgba(255, 255, 255, 0.2)', width: 5})
               });
             }
