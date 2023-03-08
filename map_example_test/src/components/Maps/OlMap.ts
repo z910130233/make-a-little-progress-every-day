@@ -72,13 +72,6 @@ export class OlMap {
         url: 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=' + OlMapConfig.tk,
         wrapX: false,
         crossOrigin: "anonymous",
-        // tileUrlFunction: function (tileCoord) {
-        //   var z = tileCoord[0]
-        //   var x = tileCoord[1]
-        //   var y = tileCoord[2]
-        //   y = -y - 1
-        //   return mapObj?.mapUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y)
-        // },
         tileLoadFunction: function (imageTile: any, src: string) {
           // 使用滤镜 将白色修改为深色
           let img = new Image()
